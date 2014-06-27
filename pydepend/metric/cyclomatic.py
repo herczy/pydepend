@@ -2,6 +2,9 @@ import ast
 import collections
 
 from ..visitor import ClassVisitor, handle
+from ..node import Node
+
+from . import Metric
 
 
 class _TypeCountVisitor(ClassVisitor):
@@ -71,8 +74,6 @@ class _CyclomaticVisitor(ClassVisitor):
         return 0
 
 
-def cyclomatic_complexity(data):
-    if isinstance(data, str):
-        data = ast.parse(data)
-
-    return _CyclomaticVisitor().visit(data)
+class CyclomaticComplexity(Metric):
+    def calculate(self, node):
+        return _CyclomaticVisitor().visit(node.ast)
