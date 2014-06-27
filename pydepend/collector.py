@@ -3,38 +3,7 @@ import collections
 import os.path
 
 from .visitor import ClassVisitor, handle
-
-
-class Node(object):
-    FUNCTION = 'function'
-    CLASS = 'class'
-
-    def __init__(self, name, ast, filename):
-        self.__name = name
-        self.__ast = ast
-        self.__filename = filename
-
-    @property
-    def name(self):
-        return self.__name
-
-    @property
-    def ast(self):
-        return self.__ast
-
-    @property
-    def filename(self):
-        return self.__filename
-
-    @property
-    def classification(self):
-        if isinstance(self.__ast, ast.FunctionDef):
-            return self.FUNCTION
-
-        elif isinstance(self.__ast, ast.ClassDef):
-            return self.CLASS
-
-        assert 0, "This should not be reachable"
+from .node import Node
 
 
 class Collector(collections.Mapping):

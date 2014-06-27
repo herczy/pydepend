@@ -32,7 +32,7 @@ def outer():
     def test_empty(self):
         self.assertEqual({}, dict(Collector()))
 
-    def __assert_node(self, key, ast_type, classification=Node.FUNCTION, filename=None):
+    def __assert_node(self, key, ast_type, filename=None):
         if filename is not None:
             filename = get_asset_path(filename)
 
@@ -41,7 +41,6 @@ def outer():
         self.assertIsInstance(node.ast, ast_type)
         self.assertEqual(key, node.name)
         self.assertEqual(filename, node.filename)
-        self.assertEqual(classification, node.classification)
 
     def test_simple_function(self):
         self.__assert_node('outer', ast.FunctionDef)
@@ -50,7 +49,7 @@ def outer():
         self.__assert_node('OuterClass.method0', ast.FunctionDef)
 
     def test_class(self):
-        self.__assert_node('OuterClass', ast.ClassDef, Node.CLASS)
+        self.__assert_node('OuterClass', ast.ClassDef)
 
     def test_keys_sorted_by_lineno(self):
         self.assertListEqual(['OuterClass', 'OuterClass.method0', 'OuterClass.method1', 'outer'],
