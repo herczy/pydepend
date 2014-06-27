@@ -1,0 +1,2 @@
+def initfunc():
+    pass
