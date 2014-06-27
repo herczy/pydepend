@@ -36,13 +36,17 @@ class Table(collections.Sequence):
     def add_row(self, *args, **kwargs):
         values = {}
         for index, arg in enumerate(args):
-            values[self.__columns[index]] = arg
+            values[self.__columns[index].name] = arg
 
         values.update(kwargs)
-        self.__rows.append(Row(self.__columns, values))
+        self.__rows.append(Row([c.name for c in self.__columns], values))
 
     def __len__(self):
         return len(self.__rows)
 
     def __getitem__(self, key):
         return self.__rows[key]
+
+    @classmethod
+    def present_simple(cls):
+        pass
