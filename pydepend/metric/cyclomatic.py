@@ -2,7 +2,7 @@ import ast
 import collections
 
 from ..visitor import ClassVisitor, handle
-from ..node import Node
+from ..node import TerminalNode
 
 from . import Metric
 

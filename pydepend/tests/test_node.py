@@ -1,13 +1,25 @@
 import unittest
 import ast
 
-from ..node import Node
+from ..node import Node, TerminalNode
 
 
 class TestNode(unittest.TestCase):
-    def test_basic_properties(self):
-        node = Node('name', ast.parse('ast'), 'file.txt')
+    def setUp(self):
+        self.ast = ast.parse('ast').body[0]
+        self.node = Node(self.ast)
 
-        self.assertEqual('name', node.name)
-        self.assertEqual('ast', node.ast.body[0].value.id)
-        self.assertEqual('file.txt', node.filename)
+    def test_ast(self):
+        self.assertEqual(self.ast, self.node.ast)
+
+
+class TestTerminalNode(unittest.TestCase):
+    def setUp(self):
+        self.ast = ast.parse('ast').body[0]
+        self.node = TerminalNode('name', self.ast, 'file.txt')
+
+    def test_name(self):
+        self.assertEqual('name', self.node.name)
+
+    def test_filename(self):
+        self.assertEqual('file.txt', self.node.filename)
