@@ -11,7 +11,7 @@ class TestCyclomatic(unittest.TestCase):
         self.metric = CyclomaticComplexity()
 
     def assert_complexity(self, complexity, code):
-        node = Node('__global__', ast.parse(code), 'test.py')
+        node = Node('__global__', ast.parse(code))
         self.assertEqual(complexity, self.metric.calculate(node))
 
     def test_simple_statement(self):
