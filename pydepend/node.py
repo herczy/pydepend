@@ -47,6 +47,20 @@ class ContainerNode(Node):
     def children(self):
         return self.__children
 
+    def __get_child_by_name(self, name):
+        for child in self.children:
+            if child.name == name:
+                return child
+
+        raise KeyError(name)
+
+    def resolve(self, fq_name):
+        res = self
+        for comp in fq_name.split('.'):
+            res = res.__get_child_by_name(comp)
+
+        return res
+
 
 class ModuleNode(ContainerNode):
     def __init__(self, name, ast, filename, children, parent=None):

@@ -47,6 +47,14 @@ class TestContainerNode(unittest.TestCase):
     def test_parents_of_children_are_updated(self):
         self.assertEqual(self.node, self.children[0].parent)
 
+    def test_resolve_child_by_name(self):
+        root_node = ContainerNode('root', None, [self.node])
+
+        self.assertEqual(self.children[0], root_node.resolve('container.child'))
+
+    def test_resolve_unknown(self):
+        self.assertRaises(KeyError, self.node.resolve, 'unknown')
+
 
 class TestModuleNode(unittest.TestCase):
     def setUp(self):
