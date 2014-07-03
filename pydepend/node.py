@@ -48,6 +48,17 @@ class ContainerNode(Node):
         return self.__children
 
 
+class ModuleNode(ContainerNode):
+    def __init__(self, name, ast, filename, children, parent=None):
+        super(ModuleNode, self).__init__(name, ast, children, parent=parent)
+
+        self.__filename = filename
+
+    @property
+    def filename(self):
+        return self.__filename
+
+
 class TerminalNode(Node):
     def __init__(self, name, ast, filename, parent=None):
         super(TerminalNode, self).__init__(name, ast, parent=parent)

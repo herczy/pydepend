@@ -1,7 +1,7 @@
 import unittest
 import ast
 
-from ..node import Node, TerminalNode, ContainerNode
+from ..node import Node, TerminalNode, ContainerNode, ModuleNode
 
 
 class TestNode(unittest.TestCase):
@@ -46,6 +46,18 @@ class TestContainerNode(unittest.TestCase):
 
     def test_parents_of_children_are_updated(self):
         self.assertEqual(self.node, self.children[0].parent)
+
+
+class TestModuleNode(unittest.TestCase):
+    def setUp(self):
+        self.children = [Node('child', None)]
+        self.node = ModuleNode('name', None, 'file.txt', self.children)
+
+    def test_filename(self):
+        self.assertEqual('file.txt', self.node.filename)
+
+    def test_children(self):
+        self.assertTupleEqual(tuple(self.children), self.node.children)
 
 
 class TestTerminalNode(unittest.TestCase):
