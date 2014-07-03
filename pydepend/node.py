@@ -2,10 +2,13 @@ import ast
 
 
 class Node(object):
+    __parent = None
+
     def __init__(self, name, ast, parent=None):
         self.__name = name
         self.__ast = ast
-        self.__parent = parent
+
+        self.parent = parent
 
     @property
     def name(self):
@@ -19,8 +22,13 @@ class Node(object):
     def parent(self):
         return self.__parent
 
+    def __validate_parent_value(self, value):
+        if value is not None and not isinstance(value, Node):
+            raise TypeError('Expected node type or None, instead of {}'.format(type(value).__name__))
+
     @parent.setter
     def parent(self, value):
+        self.__validate_parent_value(value)
         self.__parent = value
 
     @parent.deleter

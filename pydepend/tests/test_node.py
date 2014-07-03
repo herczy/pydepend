@@ -35,6 +35,13 @@ class TestNode(unittest.TestCase):
 
         self.assertEqual(None, self.node.parent)
 
+    def test_set_invalid_parent_in_constructor(self):
+        self.assertRaises(TypeError, Node, 'name', self.ast, parent=1)
+
+    def test_set_invalid_parent_with_setter(self):
+        with self.assertRaises(TypeError):
+            self.node.parent = 1
+
 
 class TestContainerNode(unittest.TestCase):
     def setUp(self):
