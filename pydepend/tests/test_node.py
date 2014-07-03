@@ -7,8 +7,11 @@ from ..node import Node, TerminalNode, ContainerNode
 class TestNode(unittest.TestCase):
     def setUp(self):
         self.ast = ast.parse('ast').body[0]
-        self.parent = Node(None)
-        self.node = Node(self.ast, parent=self.parent)
+        self.parent = Node('root', None)
+        self.node = Node('name', self.ast, parent=self.parent)
+
+    def test_name(self):
+        self.assertEqual('name', self.node.name)
 
     def test_ast(self):
         self.assertEqual(self.ast, self.node.ast)
@@ -35,8 +38,8 @@ class TestNode(unittest.TestCase):
 
 class TestContainerNode(unittest.TestCase):
     def setUp(self):
-        self.children = [Node(None)]
-        self.node = ContainerNode(ast.parse('ast'), self.children)
+        self.children = [Node('child', None)]
+        self.node = ContainerNode('container', ast.parse('ast'), self.children)
 
     def test_children(self):
         self.assertTupleEqual(tuple(self.children), self.node.children)

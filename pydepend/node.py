@@ -2,9 +2,14 @@ import ast
 
 
 class Node(object):
-    def __init__(self, ast, parent=None):
+    def __init__(self, name, ast, parent=None):
+        self.__name = name
         self.__ast = ast
         self.__parent = parent
+
+    @property
+    def name(self):
+        return self.__name
 
     @property
     def ast(self):
@@ -31,8 +36,8 @@ class Node(object):
 
 
 class ContainerNode(Node):
-    def __init__(self, ast, children, parent=None):
-        super(ContainerNode, self).__init__(ast, parent=parent)
+    def __init__(self, name, ast, children, parent=None):
+        super(ContainerNode, self).__init__(name, ast, parent=parent)
 
         self.__children = tuple(children)
         for child in self.__children:
@@ -45,14 +50,9 @@ class ContainerNode(Node):
 
 class TerminalNode(Node):
     def __init__(self, name, ast, filename, parent=None):
-        super(TerminalNode, self).__init__(ast, parent=parent)
+        super(TerminalNode, self).__init__(name, ast, parent=parent)
 
-        self.__name = name
         self.__filename = filename
-
-    @property
-    def name(self):
-        return self.__name
 
     @property
     def filename(self):
