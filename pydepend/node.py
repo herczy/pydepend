@@ -57,14 +57,3 @@ class ModuleNode(ContainerNode):
     @property
     def filename(self):
         return self.__filename
-
-
-class TerminalNode(Node):
-    def __init__(self, name, ast, filename, parent=None):
-        super(TerminalNode, self).__init__(name, ast, parent=parent)
-
-        self.__filename = filename
-
-    @property
-    def filename(self):
-        return self.__filename

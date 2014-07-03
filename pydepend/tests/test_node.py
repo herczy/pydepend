@@ -1,7 +1,7 @@
 import unittest
 import ast
 
-from ..node import Node, TerminalNode, ContainerNode, ModuleNode
+from ..node import Node, ContainerNode, ModuleNode
 
 
 class TestNode(unittest.TestCase):
@@ -58,14 +58,3 @@ class TestModuleNode(unittest.TestCase):
 
     def test_children(self):
         self.assertTupleEqual(tuple(self.children), self.node.children)
-
-
-class TestTerminalNode(unittest.TestCase):
-    def setUp(self):
-        self.node = TerminalNode('name', None, 'file.txt')
-
-    def test_name(self):
-        self.assertEqual('name', self.node.name)
-
-    def test_filename(self):
-        self.assertEqual('file.txt', self.node.filename)
