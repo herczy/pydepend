@@ -1,7 +1,7 @@
 import unittest
 import ast
 
-from ..node import Node, TerminalNode
+from ..node import Node, TerminalNode, ContainerNode
 
 
 class TestNode(unittest.TestCase):
@@ -31,6 +31,19 @@ class TestNode(unittest.TestCase):
         del self.node.parent
 
         self.assertEqual(None, self.node.parent)
+
+
+class TestContainerNode(unittest.TestCase):
+    def setUp(self):
+        self.children = [Node(None)]
+        self.node = ContainerNode(ast.parse('ast'), self.children)
+
+    def test_children(self):
+        self.assertTupleEqual(tuple(self.children), self.node.children)
+
+    def test_parents_of_children_are_updated(self):
+        self.assertEqual(self.node, self.children[0].parent)
+
 
 class TestTerminalNode(unittest.TestCase):
     def setUp(self):

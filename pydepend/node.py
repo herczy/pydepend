@@ -30,6 +30,19 @@ class Node(object):
         return self
 
 
+class ContainerNode(Node):
+    def __init__(self, ast, children, parent=None):
+        super(ContainerNode, self).__init__(ast, parent=parent)
+
+        self.__children = tuple(children)
+        for child in self.__children:
+            child.parent = self
+
+    @property
+    def children(self):
+        return self.__children
+
+
 class TerminalNode(Node):
     def __init__(self, name, ast, filename, parent=None):
         super(TerminalNode, self).__init__(ast, parent=parent)
