@@ -22,11 +22,19 @@ class TestNode(unittest.TestCase):
     def test_root_of_root(self):
         self.assertEqual(self.parent, self.parent.root)
 
+    def test_change_parent(self):
+        self.node.parent = None
+
+        self.assertEqual(None, self.node.parent)
+
+    def test_delete_parent(self):
+        del self.node.parent
+
+        self.assertEqual(None, self.node.parent)
 
 class TestTerminalNode(unittest.TestCase):
     def setUp(self):
-        self.ast = ast.parse('ast').body[0]
-        self.node = TerminalNode('name', self.ast, 'file.txt')
+        self.node = TerminalNode('name', None, 'file.txt')
 
     def test_name(self):
         self.assertEqual('name', self.node.name)

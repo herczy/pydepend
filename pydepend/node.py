@@ -14,6 +14,14 @@ class Node(object):
     def parent(self):
         return self.__parent
 
+    @parent.setter
+    def parent(self, value):
+        self.__parent = value
+
+    @parent.deleter
+    def parent(self):
+        self.__parent = None
+
     @property
     def root(self):
         if self.__parent is not None:
