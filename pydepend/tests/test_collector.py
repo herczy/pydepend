@@ -1,9 +1,10 @@
 import ast
 import unittest
 
-from ..tests import get_asset_path
 from ..collector import Collector
 from .. import node
+
+from . import get_asset_path
 
 
 class TestCollector(unittest.TestCase):
@@ -52,3 +53,9 @@ def outer():
         pkg = Collector.collect_from_ast(ast.parse(self.example), filename='package/__init__.py')
 
         self.__assert_node(pkg, 'package', ast.Module, node_type=node.ModuleNode)
+
+    def test_collect_from_file(self):
+        pkg = Collector.collect_from_file(get_asset_path('testfile.py'))
+
+        self.__assert_node(pkg, 'testfile', ast.Module, node_type=node.ModuleNode)
+        self.assertEqual(get_asset_path('testfile.py'), pkg.filename)

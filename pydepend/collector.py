@@ -7,6 +7,11 @@ from .visitor import ClassVisitor, handle
 
 class Collector(ClassVisitor):
     @classmethod
+    def collect_from_file(cls, filename):
+        with open(filename) as f:
+            return cls.collect_from_ast(ast.parse(f.read()), filename=filename)
+
+    @classmethod
     def collect_from_ast(cls, obj, filename=None):
         return cls(filename).visit(obj)
 
