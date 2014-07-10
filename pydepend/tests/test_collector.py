@@ -59,3 +59,9 @@ def outer():
 
         self.__assert_node(pkg, 'testfile', ast.Module, node_type=node.ModuleNode)
         self.assertEqual(get_asset_path('testfile.py'), pkg.filename)
+
+    def test_collect_from_directory(self):
+        pkg = Collector.collect_from_file(get_asset_path('testpackage'))
+
+        self.__assert_node(pkg, 'testpackage', ast.Module, node_type=node.ModuleNode)
+        self.assertEqual(get_asset_path('testpackage/__init__.py'), pkg.filename)

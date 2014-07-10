@@ -8,6 +8,9 @@ from .visitor import ClassVisitor, handle
 class Collector(ClassVisitor):
     @classmethod
     def collect_from_file(cls, filename):
+        if os.path.isdir(filename):
+            filename = os.path.join(filename, '__init__.py')
+
         with open(filename) as f:
             return cls.collect_from_ast(ast.parse(f.read()), filename=filename)
 
