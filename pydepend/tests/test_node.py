@@ -62,6 +62,16 @@ class TestContainerNode(unittest.TestCase):
     def test_resolve_unknown(self):
         self.assertRaises(KeyError, self.node.resolve, 'unknown')
 
+    def test_walk(self):
+        node0 = Node('node0', None)
+        node1 = Node('node1', None)
+        node2 = ContainerNode('node2', None, [node0, node1])
+        node3 = Node('node3', None)
+        node4 = ContainerNode('node4', None, [node2, node3])
+
+        self.assertListEqual([node4, node2, node0, node1, node3],
+                             list(node4.walk()))
+
 
 class TestModuleNode(unittest.TestCase):
     def setUp(self):

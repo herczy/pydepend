@@ -69,6 +69,17 @@ class ContainerNode(Node):
 
         return res
 
+    def walk(self):
+        yield self
+
+        for child in self.__children:
+            if isinstance(child, ContainerNode):
+                for res in child.walk():
+                    yield res
+
+            else:
+                yield child
+
 
 class ModuleNode(ContainerNode):
     def __init__(self, name, ast, filename, children, parent=None):
