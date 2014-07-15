@@ -65,3 +65,6 @@ class TestCyclomatic(unittest.TestCase):
 
     def test_binary_or(self):
         self.assert_complexity(1, 'a or b')
+
+    def test_metric_name(self):
+        self.assertEqual('Cyclomatic complexity', self.metric.get_metric_name())

@@ -76,3 +76,6 @@ class _CyclomaticVisitor(ClassVisitor):
 class CyclomaticComplexity(Metric):
     def calculate(self, node):
         return _CyclomaticVisitor().visit(node.ast)
+
+    def get_metric_name(self):
+        return 'Cyclomatic complexity'
