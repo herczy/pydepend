@@ -1,8 +1,10 @@
+import sys
 import ast
 import os.path
 import imp
 
 from .collector import Collector
+from .report import Result, ResultCollection
 
 
 class Project(object):
@@ -56,6 +58,8 @@ class Project(object):
     def __init__(self, path=None):
         self.__path = list(path)
         self.__modules = {}
+        self.__metrics = []
+        self.__report = None
 
     def add_package(self, fq_name):
         self.__modules.update(('.'.join(module), path) for module, path in self.__scan_module(fq_name))
@@ -66,3 +70,25 @@ class Project(object):
 
     def get_module_node(self, name):
         return Collector.collect_from_file(self.__modules[name])
+
+    def add_metric(self, metric):
+        self.__metrics.append(metric)
+
+    @property
+    def metrics(self):
+        return tuple(self.__metrics)
+
+    def set_report(self, report):
+        self.__report = report
+
+    def report(self, stream=sys.stdout):
+        results = ResultCollection()
+
+        for name in self.__modules:
+            metrics = {}
+            for metric in self.__metrics:
+                metrics[metric.get_metric_name()] = metric.calculate(self.get_module_node(name))
+
+            results.add(Result(name, metrics))
+
+        stream.write(self.__report.report(results))
