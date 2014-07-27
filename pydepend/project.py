@@ -39,8 +39,12 @@ class Project(object):
                     continue
 
                 fullpath = os.path.join(path, name)
+                module_name = self.__get_module_name(fullpath)
+                if module_name is None:
+                    continue
+
                 for res in self.__scan_path(fullpath):
-                    yield self.__get_module_name(fullpath), fullpath
+                    yield res
 
     def __get_module_name(self, path):
         if os.path.isdir(path):
@@ -56,7 +60,7 @@ class Project(object):
                 return self.__get_module_name(dirname) + (basename[:-len(suffix)],)
 
     def __init__(self, path=None):
-        self.__path = list(path)
+        self.__path = list(path or sys.path)
         self.__modules = {}
         self.__metrics = []
         self.__report = None
@@ -67,6 +71,10 @@ class Project(object):
     @property
     def modules(self):
         return frozenset(self.__modules)
+
+    @property
+    def path(self):
+        return tuple(self.__path)
 
     def get_module_node(self, name):
         return Collector.collect_from_file(self.__modules[name])

@@ -75,3 +75,6 @@ class TestProject(unittest.TestCase):
             {'testfile', 'testpackage', 'testpackage.testmod'},
             set(report.results.keys())
         )
+
+    def test_init_with_default_values(self):
+        self.assertTupleEqual(tuple(sys.path), Project().path)
