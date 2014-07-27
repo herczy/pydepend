@@ -42,6 +42,9 @@ class TestNode(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.node.parent = 1
 
+    def test_full_name(self):
+        self.assertEqual('root.name', self.node.fullname)
+
 
 class TestContainerNode(unittest.TestCase):
     def setUp(self):

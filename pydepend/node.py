@@ -15,6 +15,13 @@ class Node(object):
         return self.__name
 
     @property
+    def fullname(self):
+        if self.__parent is None:
+            return self.__name
+
+        return self.__parent.name + '.' + self.__name
+
+    @property
     def ast(self):
         return self.__ast
 
