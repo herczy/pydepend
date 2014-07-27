@@ -54,10 +54,9 @@ class Project(object):
             dirname, basename = os.path.split(path)
             return self.__get_module_name(dirname) + (basename,)
 
-        for suffix, mode, desc in imp.get_suffixes():
-            if path.endswith(suffix):
-                dirname, basename = os.path.split(path)
-                return self.__get_module_name(dirname) + (basename[:-len(suffix)],)
+        if path.endswith('.py'):
+            dirname, basename = os.path.split(path)
+            return self.__get_module_name(dirname) + (basename[:-3],)
 
     def __init__(self, path=None):
         self.__path = list(path or sys.path)
