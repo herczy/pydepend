@@ -31,20 +31,21 @@ class Project(object):
         return self.__resolve_module_path(submodule, path=[pathname])
 
     def __scan_path(self, path):
-        yield self.__get_module_name(path), path
+        module_name = self.__get_module_name(path)
+        if module_name is not None:
+            if os.path.isfile(path):
+                yield module_name, path
 
-        if os.path.isdir(path):
-            for name in os.listdir(path):
-                if name.startswith('__init__.'):
-                    continue
+            elif os.path.isdir(path) and os.path.isfile(os.path.join(path, '__init__.py')):
+                yield module_name, path
 
-                fullpath = os.path.join(path, name)
-                module_name = self.__get_module_name(fullpath)
-                if module_name is None:
-                    continue
+                for name in os.listdir(path):
+                    if name.startswith('__init__.'):
+                        continue
 
-                for res in self.__scan_path(fullpath):
-                    yield res
+                    fullpath = os.path.join(path, name)
+                    for res in self.__scan_path(fullpath):
+                        yield res
 
     def __get_module_name(self, path):
         if os.path.isdir(path):
