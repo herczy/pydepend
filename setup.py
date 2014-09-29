@@ -19,6 +19,5 @@ setup(name="pydepend",
       maintainer_email="hercinger.viktor@gmail.com",
       packages=[
         'pydepend',
-        'pydepend.metric',
-        'pydepend.report',
+        'pydepend.ext',
       ])
