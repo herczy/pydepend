@@ -34,6 +34,20 @@ class TestContext(unittest.TestCase):
         self.assertEqual(1, len(self.context.plugins))
         self.assertEqual(ExamplePlugin, type(self.context.plugins[0]))
 
+    def test_register(self):
+        self.obj = object()
+        self.context.register('testobj', self.obj)
+
+        self.assertEqual(self.obj, self.context.testobj)
+
+    def test_register_builtin(self):
+        self.assertRaises(AttributeError, self.context.register, 'plugins', object())
+
+    def test_register_double(self):
+        self.context.register('testobj', object())
+
+        self.assertRaises(AttributeError, self.context.register, 'testobj', object())
+
 
 class TestPlugin(unittest.TestCase):
     def test_get_name(self):

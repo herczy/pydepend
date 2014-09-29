@@ -16,10 +16,16 @@ class Context(object):
     Plugin run and install context.
     '''
 
+    __defaults = None
+    __options = None
+    __plugins = None
+    __registry = None
+
     def __init__(self, defaults=()):
         self.__defaults = dict(defaults)
         self.__options = {}
         self.__plugins = []
+        self.__registry = {}
 
     @property
     def plugins(self):
@@ -43,6 +49,18 @@ class Context(object):
             raise PluginError("Unknown plugin object type {}".format(type(plugin).__name__))
 
         self.__plugins.append(plugin)
+
+    def register(self, name, obj):
+        if hasattr(self, name):
+            raise AttributeError('Attribute {!r} already exists'.format(name))
+
+        self.__registry[name] = obj
+
+    def __getattr__(self, name):
+        if name not in self.__registry:
+            raise AttributeError(name)
+
+        return self.__registry[name]
 
 
 class Plugin(object):
