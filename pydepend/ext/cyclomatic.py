@@ -1,8 +1,7 @@
 import ast
 import collections
 
-from ..visitor import ClassVisitor, handle
-
+from pydepend.visitor import ClassVisitor, handle
 from pydepend.metric import Metric
 
 

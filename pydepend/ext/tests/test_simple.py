@@ -1,6 +1,7 @@
 import unittest
 
 from pydepend.report import Result, ResultCollection
+
 from ..simple import SimpleReport
 
 
