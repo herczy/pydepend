@@ -181,7 +181,7 @@ class PluginManager(object):
 
     def __init__(self, plugin_source=None):
         if plugin_source is None:
-            plugin_source = DirectPluginSource()
+            plugin_source = DefaultPluginSource()
 
         plugins = {plugin.get_name(): plugin for plugin in plugin_source.load_plugins()}
         load_order = DependencyTable(
