@@ -1,9 +1,12 @@
+from __future__ import print_function
+
 import os
 import argparse
 import sys
 
 from .plugin import PluginManager, Context
 from .project import Project
+from .version import PYDEPEND_VERSION_STRING
 
 
 class MetricContext(list):
@@ -17,12 +20,17 @@ class ReportContext(dict):
 
 
 def main():
+    version_string = '%(prog)s {}'.format(PYDEPEND_VERSION_STRING)
+
     parser = argparse.ArgumentParser(description='PyDepend runner')
     parser.add_argument('-r', '--report', default='simple',
                         help='Report type (default: %(default)s)')
     parser.add_argument('-o', '--output', default=None,
                         help='Output file name (default: stdout)')
-    parser.add_argument('packages', nargs='+', metavar='PACKAGE',
+    parser.add_argument('-L', '--list-plugins', action='store_true',
+                        help='List the plugins that were loaded')
+    parser.add_argument('--version', action='version', version=version_string)
+    parser.add_argument('packages', nargs='*', metavar='PACKAGE',
                         help='List of python packages to scan')
 
     context = Context()
@@ -40,6 +48,12 @@ def main():
     context.register('metrics', MetricContext())
     context.register('reports', ReportContext())
     manager.install(context, install)
+
+    if options.list_plugins:
+        for plugin in context.plugins:
+            print(plugin.get_name(), 'in', plugin.__module__)
+
+        return 0
 
     project = Project()
     for package in options.packages:
