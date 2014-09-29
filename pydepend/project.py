@@ -53,7 +53,8 @@ class Project(object):
                 return ()
 
             dirname, basename = os.path.split(path)
-            return self.__get_module_name(dirname) + (basename,)
+            dirmodname = self.__get_module_name(dirname) or ()
+            return dirmodname + (basename,)
 
         if path.endswith('.py'):
             dirname, basename = os.path.split(path)
