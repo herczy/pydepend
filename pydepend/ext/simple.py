@@ -1,3 +1,4 @@
+from pydepend.plugin import Plugin
 from pydepend.report import Report
 
 
@@ -11,3 +12,8 @@ class SimpleReport(Report):
         res.append('')
 
         return '\n'.join(res)
+
+
+class SimpleReportPlugin(Plugin):
+    def install(self, context):
+        context.reports.register('simple', SimpleReport())

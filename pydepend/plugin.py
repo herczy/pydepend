@@ -2,7 +2,6 @@ import pkg_resources
 
 from .resolver import DependencyTable
 from .version import PYDEPEND_VERSION
-from .ext import BUILTIN_MODULES
 
 
 class PluginError(Exception):
@@ -88,7 +87,7 @@ class Plugin(object):
         is enabled, if it returns False, it is disabled.
         '''
 
-        return False
+        return True
 
     def install(self, context):
         '''
@@ -163,14 +162,16 @@ class DefaultPluginSource(CompositePluginSource):
     Default plugin source
     '''
 
-    __sources = [
-        EntryPointSource('pydepend.{}'.format(PYDEPEND_VERSION.major)),
-        EntryPointSource('pydepend.{}.{}'.format(PYDEPEND_VERSION.major, PYDEPEND_VERSION.minor)),
-        DirectPluginSource(BUILTIN_MODULES),
-    ]
-
     def __init__(self):
-        super(DefaultPluginSource, self).__init__(self.__sources)
+        from .ext import BUILTIN_MODULES
+
+        super(DefaultPluginSource, self).__init__(
+            [
+                EntryPointSource('pydepend.{}'.format(PYDEPEND_VERSION.major)),
+                EntryPointSource('pydepend.{}.{}'.format(PYDEPEND_VERSION.major, PYDEPEND_VERSION.minor)),
+                DirectPluginSource(BUILTIN_MODULES),
+            ]
+        )
 
 
 class PluginManager(object):

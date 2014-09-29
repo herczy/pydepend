@@ -1,6 +1,7 @@
 import ast
 import collections
 
+from pydepend.plugin import Plugin
 from pydepend.visitor import ClassVisitor, handle
 from pydepend.metric import Metric
 
@@ -78,3 +79,8 @@ class CyclomaticComplexity(Metric):
 
     def get_metric_name(self):
         return 'Cyclomatic complexity'
+
+
+class CyclomaticComplexityPlugin(Plugin):
+    def install(self, context):
+        context.metrics.register(CyclomaticComplexity())
