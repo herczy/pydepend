@@ -1,6 +1,6 @@
 import unittest
 
-from .. import Result, ResultCollection
+from ..report import Result, ResultCollection
 
 
 class TestResult(unittest.TestCase):
