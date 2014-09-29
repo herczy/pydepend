@@ -1,4 +1,4 @@
-from . import Report
+from pydepend.report import Report
 
 
 class SimpleReport(Report):

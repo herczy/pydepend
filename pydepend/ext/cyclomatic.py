@@ -3,7 +3,7 @@ import collections
 
 from ..visitor import ClassVisitor, handle
 
-from . import Metric
+from pydepend.metric import Metric
 
 
 class _TypeCountVisitor(ClassVisitor):

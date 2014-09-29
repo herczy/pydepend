@@ -2,7 +2,7 @@ import io
 import sys
 import unittest
 
-from ..metric.cyclomatic import CyclomaticComplexity
+from ..ext.cyclomatic import CyclomaticComplexity
 from ..node import ModuleNode
 from ..project import Project
 from ..report import Report

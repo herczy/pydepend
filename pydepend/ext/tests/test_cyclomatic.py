@@ -1,7 +1,7 @@
 import unittest
 import ast
 
-from ...node import Node
+from pydepend.node import Node
 
 from ..cyclomatic import CyclomaticComplexity
 
