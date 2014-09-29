@@ -1,4 +1,6 @@
+import argparse
 import unittest
+import shlex
 
 from ..plugin import Context, PluginSource, Plugin, PluginError, PluginManager, EntryPointSource, \
     CompositePluginSource, DirectPluginSource
@@ -56,36 +58,108 @@ class TestPlugin(unittest.TestCase):
 
 
 class TestPluginManager(unittest.TestCase):
-    def setUp(self):
-        self.source = ExamplePluginSource()
-        self.manager = PluginManager(self.source)
+    def install(self, plugins, context=None, install_list=None):
+        source = ExamplePluginSource(plugins)
+        manager = PluginManager(source)
+
+        if context is None:
+            context = Context()
+
+        if install_list is None:
+            install_list = [plugin.get_name() for plugin in plugins]
+
+        manager.install(context, install_list)
+
+        return context
+
+    def setup_cli_options(self, plugins, cli):
+        source = ExamplePluginSource(plugins)
+        manager = PluginManager(source)
+        parser = argparse.ArgumentParser()
+
+        manager.setup_cli_options(parser)
+
+        return parser.parse_args(shlex.split(cli))
+
+    def setup(self, plugins, context=None):
+        source = ExamplePluginSource(plugins)
+        manager = PluginManager(source)
+
+        return manager.setup(context or Context())
 
     def test_install(self):
-        context = Context({'test-run-completed': False})
-        self.source.plugins.append(ExamplePlugin(option='test-run-completed'))
-
-        self.manager.install(context)
+        context = self.install(
+            [ExamplePlugin(option='test-run-completed')], 
+            Context({'test-run-completed': False})
+        )
 
         self.assertEqual(1, len(context.plugins))
         self.assertEqual(ExamplePlugin, type(context.plugins[0]))
         self.assertTrue(context.options['test-run-completed'])
 
     def test_install_with_dependencies(self):
-        context = Context()
-        self.source.plugins.extend(
+        context = self.install(
             (
-
                 ExamplePlugin(name='plugin1', requires=('plugin0',)),
                 ExamplePlugin(option='plugin-option', name='plugin0'),
             )
         )
 
-        self.manager.install(context)
-
         self.assertListEqual(
             ['plugin0', 'plugin1'],
             list(plugin.get_name() for plugin in context.plugins)
         )
+
+    def test_install_limited(self):
+        context = self.install(
+            (
+                ExamplePlugin(name='plugin1', requires=('plugin0',)),
+                ExamplePlugin(option='plugin-option', name='plugin0'),
+            ),
+            install_list=('plugin0',)
+        )
+
+        self.assertListEqual(
+            ['plugin0'],
+            list(plugin.get_name() for plugin in context.plugins)
+        )
+
+    def test_setup_cli_options(self):
+        options = self.setup_cli_options(
+            [ExamplePlugin(name='plugin')],
+            '--option 1'
+        )
+
+        self.assertEqual(1, options.option)
+
+    def test_setup(self):
+        context = Context()
+        context.set_option('option', 2)
+
+        install = self.setup([ExamplePlugin(name='plugin')], context)
+
+        self.assertListEqual(['plugin'], install)
+        self.assertTrue(context.options['plugin-setup'])
+
+    def test_setup_non_installed(self):
+        install = self.setup(
+            [
+                ExamplePlugin(name='plugin0'),
+                ExamplePlugin(name='plugin1', install=False),
+            ]
+        )
+
+        self.assertListEqual(['plugin0'], install)
+
+    def test_setup_ignores_unmet_dependencies(self):
+        install = self.setup(
+            [
+                ExamplePlugin(name='plugin0', requires=('plugin1',)),
+                ExamplePlugin(name='plugin1', install=False),
+            ]
+        )
+
+        self.assertListEqual([], install)
 
 
 class TestEntryPointSource(unittest.TestCase):
@@ -130,16 +204,24 @@ class TestCompositePluginSource(unittest.TestCase):
 
 
 class ExamplePlugin(Plugin):
-    def __init__(self, option='test-run-completed', name=None, requires=()):
+    def __init__(self, option='test-run-completed', name=None, requires=(), install=True):
         self.name = name
         self.requires = tuple(requires)
         self.option = option
+        self.should_install = install
 
     def install(self, context):
         context.set_option(self.option, True)
 
     def get_requires(self):
         return self.requires
+
+    def setup_cli_options(self, parser):
+        parser.add_argument('--option', type=int)
+
+    def setup(self, context):
+        context.set_option('{}-setup'.format(self.get_name()), True)
+        return self.should_install
 
 
 class ExamplePluginSource(PluginSource):

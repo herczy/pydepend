@@ -77,6 +77,19 @@ class Plugin(object):
 
         return self.name or type(self).__name__
 
+    def setup_cli_options(self, parser):
+        '''
+        Setup the plugin command line options.
+        '''
+
+    def setup(self, context):
+        '''
+        Setup the plugin. If the function returns True, the plugin
+        is enabled, if it returns False, it is disabled.
+        '''
+
+        return False
+
     def install(self, context):
         '''
         Install the plugin.
@@ -166,20 +179,51 @@ class PluginManager(object):
     '''
 
     def __init__(self, plugin_source=None):
-        self.__plugin_source = plugin_source or DirectPluginSource()
+        if plugin_source is None:
+            plugin_source = DirectPluginSource()
 
-    def install(self, context):
-        '''
-        Install all plugins.
-        '''
-
-        plugins = {plugin.get_name(): plugin for plugin in self.__plugin_source.load_plugins()}
-
+        plugins = {plugin.get_name(): plugin for plugin in plugin_source.load_plugins()}
         load_order = DependencyTable(
             (name, plugin.get_requires()) for name, plugin in plugins.items()
         ).resolve_all(flat=True)
 
-        for plugin_name in load_order:
-            plugin = plugins[plugin_name]
+        self.__plugins = [plugins[name] for name in load_order]
+
+    def install(self, context, plugins):
+        '''
+        Install all plugins.
+        '''
+
+        plugins = set(plugins)
+
+        for plugin in self.__plugins:
+            if plugin.get_name() not in plugins:
+                continue
+
             context.add_plugin(plugin)
             plugin.install(context)
+
+    def setup_cli_options(self, parser):
+        '''
+        Setup command line interface options.
+        '''
+
+        for plugin in self.__plugins:
+            plugin.setup_cli_options(parser)
+
+    def setup(self, context):
+        '''
+        Setup plugins. This will return the list of enabled plugins.
+        '''
+
+        passed = []
+
+        for plugin in self.__plugins:
+            if any(requirement not in passed for requirement in plugin.get_requires()):
+                continue
+
+            should_install = plugin.setup(context)
+            if should_install:
+                passed.append(plugin.get_name())
+
+        return passed
