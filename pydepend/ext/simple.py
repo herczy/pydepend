@@ -15,5 +15,7 @@ class SimpleReport(Report):
 
 
 class SimpleReportPlugin(Plugin):
+    name = 'simple-report'
+
     def install(self, context):
         context.reports.register('simple', SimpleReport())

@@ -82,5 +82,7 @@ class CyclomaticComplexity(Metric):
 
 
 class CyclomaticComplexityPlugin(Plugin):
+    name = 'cyclomatic-complexity'
+
     def install(self, context):
         context.metrics.register(CyclomaticComplexity())
